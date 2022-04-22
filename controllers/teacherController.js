@@ -31,9 +31,8 @@ exports.getSpecificTeacher = catchAsync(async (req, res, next) => {
 
 exports.createTeacaher = catchAsync(async (req, res, next) => {
   // const newTeacher = new Teacher({})
-  // newTeacher.save()
-
-  //**role will be checked. If it is admin then ok otherwise return */
+  // newTeacher.save() or, 
+  
   req.body.role = "teacher";
   const newTeacher = await User.create(req.body);
 
