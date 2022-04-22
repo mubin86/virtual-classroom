@@ -1,8 +1,8 @@
-const Teacher = require("./../models/teacherModel");
+const User = require("../models/userModel");
 const catchAsync = require("./../utils/catchAsync");
 
 exports.getAllTeacaher = catchAsync(async (req, res, next) => {
-    const teachers = await Teacher.find();
+    const teachers = await User.find({role: "teacher"});
 
     res.status(200).json({
       status: "success",
@@ -14,8 +14,8 @@ exports.getAllTeacaher = catchAsync(async (req, res, next) => {
 });
 
 exports.getSpecificTeacher = catchAsync(async (req, res, next) => {
-    const teacher = await Teacher.findById(req.params.id);
-    // or, Teacher.findOne({ _id: req.params.id })
+    const teacher = await User.findById(req.params.id);
+    // or, User.findOne({ _id: req.params.id })
   
     if (!teacher) {
       return next(new AppError("No teacher found with that ID", 404));
@@ -34,7 +34,8 @@ exports.createTeacaher = catchAsync(async (req, res, next) => {
   // newTeacher.save()
 
   //**role will be checked. If it is admin then ok otherwise return */
-  const newTeacher = await Teacher.create(req.body);
+  req.body.role = "teacher";
+  const newTeacher = await User.create(req.body);
 
   res.status(201).json({
     status: "success",
@@ -45,7 +46,11 @@ exports.createTeacaher = catchAsync(async (req, res, next) => {
 });
 
 exports.updateTeacaher = catchAsync(async (req, res, next) => {
-    const teacher = await Teacher.findByIdAndUpdate(req.params.id, req.body, {
+    if (req.body.role && req.body.role != "teacher") {
+        return next(new AppError("Invalid Arguments, Not allowed to perform this operation", 400));
+      }
+
+    const teacher = await User.findByIdAndUpdate(req.params.id, req.body, {
         new: true,
         runValidators: true,
       });
@@ -63,7 +68,7 @@ exports.updateTeacaher = catchAsync(async (req, res, next) => {
 });
 
 exports.deleteTeacaher = catchAsync(async (req, res, next) => {
-    const teacher = await Teacher.findByIdAndDelete(req.params.id);
+    const teacher = await User.findByIdAndDelete(req.params.id);
 
     if (!teacher) {
       return next(new AppError("No teacher found with that ID", 404));

@@ -2,10 +2,13 @@ const mongoose = require("mongoose");
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
 
-const teacherSchema = new mongoose.Schema({
-  name: {
+const userSchema = new mongoose.Schema({
+  email: {
     type: String,
-    required: [true, "Please tell us your name!"],
+    required: [true, 'Please provide your email'],
+    unique: true,
+    lowercase: true,
+    validate: [validator.isEmail, 'Please provide a valid email']
   },
   password: {
     type: String,
@@ -13,10 +16,9 @@ const teacherSchema = new mongoose.Schema({
     minlength: 8,
     select: false,
   },
-  photo: String,
   role: {
     type: String,
-    enum: ['teacher'], // ***we can also maintain seperate Role model(table) if role type increase in future, 
+    enum: ['admin', 'teacher', 'student'], // ***we can also maintain seperate Role model(table) if role type increase in future, 
                                             // and at that case we can just keep the role foreign key here for mapping
                                             // now, for simplicity maintaining this Enum
   
@@ -30,14 +32,20 @@ const teacherSchema = new mongoose.Schema({
 
 });
 
-teacherSchema.pre("save", async function (next) {
+userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();
-
   this.password = await bcrypt.hash(this.password, 12);
   next();
 });
 
+userSchema.methods.correctPassword = async function (
+  candidatePassword,
+  userPassword
+) {
+  return await bcrypt.compare(candidatePassword, userPassword);
+};
 
-const Teacher = mongoose.model("Teacher", teacherSchema);
 
-module.exports = Teacher;
+const User = mongoose.model("User", userSchema); 
+
+module.exports = User;
