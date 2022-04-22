@@ -1,0 +1,21 @@
+{
+  "name": "virtual-classroom",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon server.js",
+    "start:prod": "NODE_ENV=production nodemon server.js",
+    "debug": "ndb server.js"
+  },
+  "author": "Mubin",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "dotenv": "^16.0.0",
+    "express": "^4.17.3",
+    "mongoose": "^6.3.1",
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.15"
+  }
+}
