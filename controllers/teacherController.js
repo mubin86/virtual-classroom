@@ -39,7 +39,7 @@ exports.createTeacaher = catchAsync(async (req, res, next) => {
   const generatedPassword = crypto.randomBytes(12).toString('hex');
   req.body.password = generatedPassword;
   req.body.role = "teacher";
-  const message = `Congratulations you have been added in the Virtual Classroom as a Teacher.\n PLease use this Password ${generatedPassword}. to Login!`;
+  const message = `Congratulations you have been added in the Virtual Classroom as a Teacher.\n Please use this Password ${generatedPassword} to Login!`;
 
   const newTeacher = await User.create(req.body);
   try {
@@ -48,7 +48,6 @@ exports.createTeacaher = catchAsync(async (req, res, next) => {
       subject: 'Virtual Classroom Password',
       message
     });
-    console.log("sendgrid function response is ", response);
 
     if(response.code >= 400){
         return next(
@@ -57,7 +56,6 @@ exports.createTeacaher = catchAsync(async (req, res, next) => {
         );
     }
   } catch (err) {
-    console.log("email sending error is ", error);
     //Here we can take any decision(like delete the created user from the Db or can take any other action) according to the business logic
     return next(
       new AppError('There was an error sending the email. Try again later!'),
