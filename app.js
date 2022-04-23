@@ -3,6 +3,7 @@ const morgan = require('morgan');
 const app = express();
 const userRouter = require('./routes/userRoutes');
 const teacherRouter = require('./routes/teacherRoutes');
+const classroomRouter = require('./routes/classRoomRoutes');
 const AppError = require("./utils/appError");
 const globalErrorHandler = require("./controllers/errorController");
 
@@ -15,6 +16,7 @@ app.use(express.json());
 
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/teachers', teacherRouter);
+app.use('/api/v1/classroom', classroomRouter);
 
 app.all("*", (req, res, next) => {
     next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));

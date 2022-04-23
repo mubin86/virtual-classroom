@@ -5,12 +5,17 @@ const classroomSchema = new mongoose.Schema({
     type: String,
     required: [true, 'An unique code is required for creating a classroom'],
     unique: true,
-    minlength: 8
+    minlength: 10
   },
   teacher: {
     type: mongoose.Schema.ObjectId,
     ref: 'User',
     required: [true, 'Classroom must belong to a Teacher.']
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now(),
+    select: false
   },
   active: {
     type: Boolean, //** we can use the soft delete concept by this */
@@ -22,7 +27,7 @@ const classroomSchema = new mongoose.Schema({
 classroomSchema.pre(/^find/, function(next) {
     this.populate({
       path: 'teacher',
-      select: '-__v email'
+      select: '-__v'
     });
     next();
 });

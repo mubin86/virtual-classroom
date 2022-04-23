@@ -5,7 +5,7 @@ const catchAsync = require("./../utils/catchAsync");
 const AppError = require('./../utils/appError');
 
 exports.getAllTeacaher = catchAsync(async (req, res, next) => {
-    const teachers = await User.find({role: "teacher"});
+    const teachers = await User.find({role: "teacher"}).sort({createdAt: -1});
 
     res.status(200).json({
       status: "success",
@@ -37,8 +37,9 @@ exports.createTeacaher = catchAsync(async (req, res, next) => {
   // newTeacher.save() or, 
   
   const generatedPassword = crypto.randomBytes(12).toString('hex');
+  console.log("generated password is ", generatedPassword);
   req.body.password = generatedPassword;
-  req.body.role = "teacher";
+  req.body.role = "teacher"; //**for safety
   const message = `Congratulations you have been added in the Virtual Classroom as a Teacher.\n Please use this Password ${generatedPassword} to Login!`;
 
   const newTeacher = await User.create(req.body);
@@ -63,6 +64,7 @@ exports.createTeacaher = catchAsync(async (req, res, next) => {
     );
   }
 
+  newTeacher.password = undefined;
   res.status(201).json({
     status: "success",
     data: {

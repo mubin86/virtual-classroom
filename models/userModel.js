@@ -28,6 +28,11 @@ const userSchema = new mongoose.Schema({
                                             // now, for simplicity maintaining this Enum
     default: 'teacher'
   },
+  createdAt: {
+    type: Date,
+    default: Date.now(),
+    select: false
+  },
   active: {
     type: Boolean, //** we can use the soft delete concept by this */
     default: true,
@@ -36,11 +41,10 @@ const userSchema = new mongoose.Schema({
 
 });
 
-
-userSchema.pre(/^find/, function(next) {
-  this.find({ role: { $ne: 'admin' } });
-  next();
-});
+// userSchema.pre(/^find/, function(next) {
+//   this.find({ role: { $ne: 'admin' } });
+//   next();
+// });
 
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) return next();

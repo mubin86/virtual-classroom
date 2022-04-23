@@ -36,7 +36,7 @@ const createSendToken = (user, statusCode, res) => {
 
 exports.login = catchAsync(async (req, res, next) => {
     const { email, password } = req.body;
-  
+
     // 1) Check if email and password exist
     if (!email || !password) {
       return next(new AppError("Please provide email and password!", 400));
@@ -47,7 +47,7 @@ exports.login = catchAsync(async (req, res, next) => {
     if (!user || !(await user.correctPassword(password, user.password))) {
       return next(new AppError("Incorrect email or password", 401));
     }
-  
+    
     // 3) If everything ok, send token to client
     createSendToken(user, 200, res);
 });
@@ -89,6 +89,7 @@ exports.protect = catchAsync(async (req, res, next) => {
 
 exports.restrictTo = (...roles) => {
     return (req, res, next) => {
+        console.log("req user role is ", req.user.role);
       if (!roles.includes(req.user.role)) {
         return next(
           new AppError('You do not have permission to perform this action', 403)
