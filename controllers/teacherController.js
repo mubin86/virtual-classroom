@@ -76,7 +76,7 @@ exports.createTeacaher = catchAsync(async (req, res, next) => {
 exports.updateTeacaher = catchAsync(async (req, res, next) => {
     if (req.body.role && req.body.role != "teacher") {
         return next(new AppError("Invalid Arguments, Not allowed to perform this operation", 400));
-      }
+    }
 
     const teacher = await User.findByIdAndUpdate(req.params.id, req.body, {
         new: true,

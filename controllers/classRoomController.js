@@ -60,3 +60,17 @@ exports.deleteClassRoom  = catchAsync(async (req, res, next) => {
       data: null,
     });
 });
+
+exports.endClassRoom  = catchAsync(async (req, res, next) => {
+    const classroom = await Classroom.findOneAndUpdate({ _id: req.params.id}, 
+        { active: false}
+    );
+    if (!classroom) {
+      return next(new AppError("No classroom found with that ID", 404));
+    }
+  
+    res.status(200).json({
+      status: "success",
+      message: "Successfully Class ended"
+    });
+});

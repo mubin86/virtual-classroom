@@ -18,16 +18,21 @@ const classroomSchema = new mongoose.Schema({
     select: false
   },
   active: {
-    type: Boolean, //** we can use the soft delete concept by this */
+    type: Boolean, //** soft delete */
     default: true,
     select: false
   }
 });
 
 classroomSchema.pre(/^find/, function(next) {
+  this.find({ active: { $ne: false } });
+  next();
+});
+
+classroomSchema.pre(/^find/, function(next) {
     this.populate({
       path: 'teacher',
-      select: '-__v'
+      select: '-__v -role'
     });
     next();
 });

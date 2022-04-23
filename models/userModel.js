@@ -21,7 +21,7 @@ const userSchema = new mongoose.Schema({
     enum: {
       values: ['admin', 'teacher'], // we just keep the admin role here to indicate that we can manually give a script/insert-query for the admin role using this table
                                     // there is no endpoint or procedure to create an admin role from the api so it is secured
-                                    // We can take of course any other approach for the role management according to the need
+                                    // We can take of course any other approach for the role management according to the business need
       message: 'User is either: admin, teacher'
     }, // ***we can also maintain seperate Role model(table) if role type increase in future, 
                                             // and at that case we can just keep the role foreign key here for mapping
@@ -58,7 +58,6 @@ userSchema.methods.correctPassword = async function (
 ) {
   return await bcrypt.compare(candidatePassword, userPassword);
 };
-
 
 const User = mongoose.model("User", userSchema); 
 

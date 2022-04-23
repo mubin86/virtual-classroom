@@ -3,21 +3,21 @@ const mongoose = require("mongoose");
 const classroomPostSchema = new mongoose.Schema({
   marks: {
     type: Number,
-    required: [true, 'A Class Rom Post must have a marks property']
+    required: [true, 'A Class Room Post must have a marks property']
   },
   deadline: {
     type: Date,
-    required: [true, 'A Class Rom Post must have a deadline property'],
+    required: [true, 'A Class Room Post must have a deadline property'],
   },
-  taeacher: {
+  teacher: {
     type: mongoose.Schema.ObjectId,
     ref: 'User',
-    required: [true, 'ClassroomPost must belong to a Teacher.']
+    required: [true, 'Class Room Post must belong to a Teacher.']
   },
   classroom: {
     type: mongoose.Schema.ObjectId,
     ref: 'Classroom',
-    required: [true, 'ClassroomPost must belong to a Classroom.']
+    required: [true, 'Class Room Post must belong to a Classroom.']
   },
   postType: {
     type: String,
@@ -39,16 +39,13 @@ const classroomPostSchema = new mongoose.Schema({
 
 });
 
-classroomPostSchema.index({ taeacher: 1, classroom: 1 });
+classroomPostSchema.index({ classroom: 1 });
 
 classroomPostSchema.pre(/^find/, function(next) {
     this.populate({
       path: 'classroom',
       select: '-__v'
-    }).populate({
-      path: 'taeacher',
-      select: '-__v email'
-    });;
+    });
     next();
 });
 
