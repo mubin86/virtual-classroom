@@ -5,6 +5,7 @@ const AppError = require('./../utils/appError');
 
 exports.getAllClassRoomPost = catchAsync(async (req, res, next) => {
     let classroomPosts;
+    
     if(req.query.teacherId && req.query.classroomId){
         classroomPosts = await ClassroomPost.find({teacher: req.query.teacherId, classroom: req.query.classroomId}) ;
     } else if(req.query.classroomId){
