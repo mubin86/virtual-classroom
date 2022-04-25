@@ -12,13 +12,19 @@ const router = express.Router();
 router.post('/login', authController.studentLogin);
 
 
+router
+  .route("/view-all-classromm")
+  .get(authController.protect('student'), 
+    authController.restrictTo('student'), 
+    studentClassrooomController.viewAllClassroomByStudent
+ );
 
 router
   .route("/view-classroom-post/:classroomId")
   .get(authController.protect('student'),
     authController.restrictTo('student'), 
     studentClassrooomController.viewClassRoomPost
-   );
+ );
 
 router
   .route("/")
