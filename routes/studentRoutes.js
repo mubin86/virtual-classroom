@@ -1,20 +1,15 @@
 const express = require("express");
 const studentClassrooomController = require("../controllers/studentClassroomController");
 const authController = require('./../controllers/authController');
+const upload = require('../middleware/upload');
 
 const router = express.Router();
 
-// Protect all routes after this middleware
-//***not clear about this business logic must be implement later:WIP*****/
-// router.use(authController.protect);
-// router.use(authController.restrictTo('admin', 'student'));
-
 router.post('/login', authController.studentLogin);
-
 
 router
   .route("/view-all-classromm")
-  .get(authController.protect('student'), 
+  .get(authController.protect('student'),  
     authController.restrictTo('student'), 
     studentClassrooomController.viewAllClassroomByStudent
  );
@@ -24,6 +19,14 @@ router
   .get(authController.protect('student'),
     authController.restrictTo('student'), 
     studentClassrooomController.viewClassRoomPost
+ );
+
+ router
+  .route("/upload/submissions")
+  .post(authController.protect('student'), 
+    authController.restrictTo('student'), 
+    upload.single('file'),
+    studentClassrooomController.createSubmission
  );
 
 router

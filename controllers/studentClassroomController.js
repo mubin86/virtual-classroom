@@ -1,11 +1,11 @@
-const crypto = require('crypto');
+
 const Student = require("../models/studentModel");
 const Classroom = require("../models/classroomModel");
 const ClassroomPost = require("../models/classroomPostModel");
 const StudentClassroom = require("../models/studentClassroomModel");
+const StudentSubmission = require("../models/studentSubmissionModel");
 const catchAsync = require("../utils/catchAsync");
 const AppError = require('../utils/appError');
-const User = require('../models/userModel');
 
 exports.getAllEnrolledStudents = catchAsync(async (req, res, next) => {
     let enrolledStudents;
@@ -43,6 +43,7 @@ exports.getSpecificStudent = catchAsync(async (req, res, next) => {
 
 exports.createStudent = catchAsync(async (req, res, next) => {
   /**fisrtly check if the Classroom exists or not with the given code*/
+  console.log("create student controller is called");
     let classroom = await Classroom.findOne({code: req.body.code});
     if(!classroom){
         return next(new AppError("No Classroom found with the requested code", 400));
@@ -50,11 +51,12 @@ exports.createStudent = catchAsync(async (req, res, next) => {
 
     //**find all the enrolled students in that class */
     let allEnrolledStudents = await StudentClassroom.find({ classroom });
+    console.log("allEnrolledStudents is ", allEnrolledStudents);
     
     let filteredStudent = allEnrolledStudents.filter(e => e.student.email == req.body.email);
 
     //**checking the requested email already present in any other classroom*/
-    if(filteredStudent){
+    if(filteredStudent.length > 0){
       return next(new AppError("This email already exits in this classroom", 400));
     }
 
@@ -83,7 +85,7 @@ exports.createStudent = catchAsync(async (req, res, next) => {
     })
     let enrolledStudentInClass =  await newStudentEnrolledClass.save();
 
-    savedStudent.password = undefined;
+    enrolledStudentInClass.student.password = undefined;
     res.status(201).json({
         status: "success",
         data: {
@@ -124,6 +126,7 @@ exports.deleteStudent = catchAsync(async (req, res, next) => {
 
 
 exports.viewAllClassroomByStudent = catchAsync(async (req, res, next) => {
+  console.log("view class room req user id id ", req.user.id);
   let classroomsForLoggedInStudent = await StudentClassroom.find({student: req.user.id});
 
   res.status(200).json({
@@ -141,17 +144,53 @@ exports.viewClassRoomPost = catchAsync(async (req, res, next) => {
   //**this is just for safety check ***/
   let filteredStudent = enrolledStudents.filter(e => e.student.email == req.user.email);
   console.log("filteredStudent is ", filteredStudent);
-  if(!filteredStudent){
+  if(filteredStudent.length == 0){
     return next(new AppError("This student does not have permission in this classroom", 400));
   }
 
-  let classroomPost = ClassroomPost.find({ classroom: req.params.classroomId });
+  let classroomPost = await ClassroomPost.find({ classroom: req.params.classroomId });
 
   res.status(200).json({
     status: "success",
     results: classroomPost.length,
     data: {
       classroomPost,
+    },
+  });
+});
+
+exports.createSubmission = catchAsync(async (req, res, next) => {
+  let enrolledStudents = await StudentClassroom.find({classroom: req.body.classroomId});
+  let filteredStudent = enrolledStudents.filter(e => e.student.email == req.user.email);
+  console.log("filteredStudent is ", filteredStudent);
+  if(!filteredStudent){
+    return next(new AppError("This student is not allowed to submit in this classroom", 400));
+  }
+
+  let classroomPost = ClassroomPost.findOne({ _id: req.body.classroomPostId, classroom: req.body.classroomId });
+  if(!classroomPost){
+    return next(new AppError("This Classroom Post does not belong to the requested Classroom", 400));
+  }
+ 
+  console.log("uploaded file info is ", req.file);
+  if (!req.file) {
+    return next(new AppError("Please submit a valid document", 400));
+  }
+  const studentSubmission = await StudentSubmission.create({
+    student: req.user.id,
+    classroom: req.body.classroomId,
+    classroomPost: req.body.classroomPostId,
+    file: req.file.filename,
+  });
+
+  const savedSubmission = await studentSubmission.save();
+  console.log("savedSubmission is " , savedSubmission)
+
+
+  res.status(201).json({
+    status: "success",
+    data: {
+      submissionInfo: savedSubmission
     },
   });
 });

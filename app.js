@@ -15,7 +15,9 @@ if (process.env.NODE_ENV === 'development') {
 
 app.use(express.json());
 
-app.use('/api/v1/users', userRouter);
+app.use('/uploads', express.static(`${__dirname}/uploads`));
+
+// app.use('/api/v1/users', userRouter);
 app.use('/api/v1/teachers', teacherRouter);
 app.use('/api/v1/classroom', classroomRouter);
 app.use('/api/v1/students', studentClassroomRouter);

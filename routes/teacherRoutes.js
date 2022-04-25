@@ -4,8 +4,10 @@ const authController = require('./../controllers/authController');
 
 const router = express.Router();
 
+router.post('/login', authController.login);
+
 // Protect all routes after this middleware
-router.use(authController.protect('teacher'));
+router.use(authController.protect('teacher')); //** admin condition also get verified by this condition
 router.use(authController.restrictTo('admin'));
 
 router

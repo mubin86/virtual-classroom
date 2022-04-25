@@ -38,6 +38,7 @@ exports.getSingleClassRoom = catchAsync(async (req, res, next) => {
 exports.createClassRoom = catchAsync(async (req, res, next) => {
   req.body.code = crypto.randomBytes(10).toString('hex');
   req.body.teacher = req.user.id;
+  console.log("req.body.code is ", req.body.code);
   const newClassroom = await Classroom.create(req.body);
 
   res.status(201).json({

@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const studentClassroomSchema = new mongoose.Schema({
+const studentSubmissionSchema = new mongoose.Schema({
   student: {
     type: mongoose.Schema.ObjectId,
     ref: 'Student',
@@ -16,34 +16,33 @@ const studentClassroomSchema = new mongoose.Schema({
     ref: 'ClassroomPost',
     required: [true, 'Submission must belong to a Classroom Post']
   },
+  file: {
+    type: String,
+    required: [true, "Uploaded file must have a name"],
+  },
   createdAt: {
     type: Date,
     default: Date.now(),
     select: false
-  },
-  file: {
-      type: String
-  },
-  active: {
-    type: Boolean,
-    default: true,
-    select: false
   }
 });
 
-studentClassroomSchema.index({ student: 1, classroom: 1 });
+studentSubmissionSchema.index({ student: 1, classroom: 1, classroomPost: 1 });
 
-studentClassroomSchema.pre(/^find/, function(next) {
+studentSubmissionSchema.pre(/^find/, function(next) {
     this.populate({
       path: 'student',
       select: '-__v -password'
     }).populate({
       path: 'classroom',
       select: '-__v'
+    }).populate({
+       path: 'classroomPost',
+       select: 'marks deadline'
     });
     next();
 });
 
-const StudentClassroom = mongoose.model("StudentClassroom", studentClassroomSchema); 
+const StudentSubmission = mongoose.model("StudentSubmission", studentSubmissionSchema); 
 
-module.exports = StudentClassroom;
+module.exports = StudentSubmission;
