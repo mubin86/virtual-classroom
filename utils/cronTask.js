@@ -9,28 +9,25 @@ const sendEmail = require('./email');
 
 const cronTask = async options => {
     try {
-        console.log("cros task function is called")
-    
         let deadlineTimeDiffernceInHour = 1;
         let allClassroomPosts = await ClassroomPost.find({ 
             deadline: { $lte: Date.now() + deadlineTimeDiffernceInHour * 60 * 60 * 1000},
             isEmailSent: false
         })
-        console.log("allClassroomPosts from cron is ", allClassroomPosts);
         let allClassroomsIds = allClassroomPosts.map(post => post.classroom._id);
       
         let classroomStudents = await StudentClassroom.find({ classroom: { $in: allClassroomsIds }});
-        console.log("classroomStudents is ", classroomStudents)
-
         let studentEmailList =  classroomStudents.map(classroom => classroom.student.email);
+        if(studentEmailList.length == 0){
+            return;
+        }
 
         const message = `You have an Exam/Assignment just after One hour. Please be prepare for that, Good Luck.`;
-        const response = await sendEmail({
+        await sendEmail({
             email: studentEmailList,
             subject: 'Reminder for Assignment/Exam',
             message
         });
-        //some error handle will be done later
 
         let allClassroomPostsIds = allClassroomPosts.map(classroomPost => classroomPost._id);
 
@@ -38,8 +35,6 @@ const cronTask = async options => {
             { _id: { $in: allClassroomPostsIds } },
             { $set: { isEmailSent : true } }
         );
-
-        console.log("email updated response is ", updatedEmailSentFlag);
 
         return updatedEmailSentFlag;
 

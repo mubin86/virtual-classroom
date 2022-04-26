@@ -1,7 +1,6 @@
 const express = require('express');
 const morgan = require('morgan');
 const app = express();
-const userRouter = require('./routes/userRoutes');
 const teacherRouter = require('./routes/teacherRoutes');
 const classroomRouter = require('./routes/classRoomRoutes');
 const studentClassroomRouter = require('./routes/studentRoutes');
@@ -18,7 +17,6 @@ app.use(express.json());
 
 app.use('/uploads', express.static(`${__dirname}/uploads`));
 
-// app.use('/api/v1/users', userRouter);
 app.use('/api/v1/teachers', teacherRouter);
 app.use('/api/v1/classroom', classroomRouter);
 app.use('/api/v1/students', studentClassroomRouter);

@@ -28,8 +28,8 @@ const server = app.listen(port, () => {
 //**so we must be contionusly checking about the deadline time*/
 cron.schedule('*/5 * * * *', async () => {
   console.log("scheduler running");
-  const cronTaskResponse = await cronTask();
-  console.log("cronTaskResponse is ", cronTaskResponse)
+  await cronTask();
+
 });
 
 process.on('unhandledRejection', err => {
