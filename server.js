@@ -29,7 +29,6 @@ const server = app.listen(port, () => {
 cron.schedule('*/5 * * * *', async () => {
   console.log("scheduler running");
   await cronTask();
-
 });
 
 process.on('unhandledRejection', err => {

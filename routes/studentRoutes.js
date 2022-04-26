@@ -5,6 +5,9 @@ const upload = require('../middleware/upload');
 
 const router = express.Router();
 
+// ** authController.protect('teacher') means it will query into the User(Teacher) model
+// ** authController.protect('student') means it will query into the Student model
+
 router.post('/login', authController.studentLogin);
 
 router

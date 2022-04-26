@@ -2,7 +2,8 @@ const mongoose = require("mongoose");
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
 
-//*********this is actually the TEACHER model ***////
+//*********this is actually the TEACHER and ADMIN model ***////
+//** For Student different model is maintained */
 const userSchema = new mongoose.Schema({
   email: {
     type: String,

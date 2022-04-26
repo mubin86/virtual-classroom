@@ -1,5 +1,5 @@
 const crypto = require('crypto');
-const User = require("../models/userModel"); //***it is actually the Teacher Model */
+const User = require("../models/userModel"); //***it is actually the TEACHER Model */
 const Result = require("../models/resultModel"); 
 const sendEmail = require('./../utils/email');
 const catchAsync = require("./../utils/catchAsync");
@@ -35,11 +35,12 @@ exports.getSpecificTeacher = catchAsync(async (req, res, next) => {
 });
 
 exports.createTeacaher = catchAsync(async (req, res, next) => {
-  // const newTeacher = new Teacher({})
-  // newTeacher.save() or, 
-  
+  let teacher = await User.findOne({email: req.body.email});
+  if(teacher){
+    return next(new AppError("Tacher already exists with the request email", 400));
+  }
   const generatedPassword = crypto.randomBytes(12).toString('hex');
-  console.log("generated password is ", generatedPassword);
+  console.log("generated password for tacher is ", generatedPassword);
   req.body.password = generatedPassword;
   req.body.role = "teacher"; //**for safety
   const message = `Congratulations you have been added in the Virtual Classroom as a Teacher.\n Please use this Password ${generatedPassword} to Login!`;
