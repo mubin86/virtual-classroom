@@ -1,6 +1,6 @@
 # **Virtual Classroom Project**
 
-- To run the project successfully, first of all we need to put the environment variable properly in the config.env file. Here, for the database connection we have to give any Mongodb Atlas credentials. For the Email sending, we need a Sendgrid Api Key and the Sendgrid account holders Email. After putting all the info, we can start our project by running the command npm start.
+- To run the project successfully, first of all we need to put the environment variable properly in the config.env file. Here, for the database connection we have to give any Mongodb Atlas credentials. For the Email sending, we need a Sendgrid Api Key and the Sendgrid account holders Email. After putting all the info, we can start our project by running the command ```npm start```
 
 ```
 MONGO_USER=
@@ -24,5 +24,5 @@ SENDGRID_VERIFIED_EMAIL=
 
 - For File uploads, A folder should be crated in the project root directory named ```uploads```
 
-- All the other features are implemented according to business logic properly. Various types of APIs are implemented for the Students and Teachers with some good filtering criteria with proper authentication and autorization. Such as, When any student try to perform a operation in any classroom at first it is checked that the student has access or not in the choosen classroom. This sort of small checks are tried to implemented in every case where it was needed.
+- All the other features are implemented according to business logic properly. Various types of APIs are implemented for the Students and Teachers with some good filtering criteria with proper authentication and autorization. Such as, When any student try to perform an operation in any classroom at first it is checked that the student has access or not in the choosen classroom. This sort of small checks are tried to implemented in every case where it was needed.
 
