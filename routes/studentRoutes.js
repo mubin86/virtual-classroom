@@ -8,6 +8,13 @@ const router = express.Router();
 router.post('/login', authController.studentLogin);
 
 router
+  .route("/view-result")
+  .get(authController.protect('student'),  
+    authController.restrictTo('student'), 
+    studentClassrooomController.viewResult
+);
+
+router
   .route("/view-all-classromm")
   .get(authController.protect('student'),  
     authController.restrictTo('student'), 

@@ -10,7 +10,7 @@ const sendEmail = require('./email');
 const cronTask = async options => {
     try {
         console.log("cros task function is called")
-        // return await sendGridMail.send(getMessage(options));
+    
         let deadlineTimeDiffernceInHour = 1;
         let allClassroomPosts = await ClassroomPost.find({ 
             deadline: { $lte: Date.now() + deadlineTimeDiffernceInHour * 60 * 60 * 1000},
@@ -41,7 +41,7 @@ const cronTask = async options => {
 
         console.log("email updated response is ", updatedEmailSentFlag);
 
-            return updatedEmailSentFlag;
+        return updatedEmailSentFlag;
 
     } catch (error) {
         console.log("cron task error is ", error);

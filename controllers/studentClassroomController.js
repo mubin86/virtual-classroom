@@ -1,6 +1,7 @@
 
 const Student = require("../models/studentModel");
 const Classroom = require("../models/classroomModel");
+const Result = require("../models/resultModel");
 const ClassroomPost = require("../models/classroomPostModel");
 const StudentClassroom = require("../models/studentClassroomModel");
 const StudentSubmission = require("../models/studentSubmissionModel");
@@ -192,5 +193,26 @@ exports.createSubmission = catchAsync(async (req, res, next) => {
     data: {
       submissionInfo: savedSubmission
     },
+  });
+});
+
+exports.viewResult = catchAsync(async (req, res, next) => {
+  let enrolledStudents = await StudentClassroom.find({classroom: req.query.classroomId});
+
+  //**this is just for safety check ***/
+  let filteredStudent = enrolledStudents.filter(e => e.student.email == req.user.email);
+  console.log("filteredStudent is ", filteredStudent);
+  if(filteredStudent.length == 0){
+    return next(new AppError("This student does not have permission to see the Result", 400));
+  }
+
+  let result = await Result.findOne({ classroom: req.query.classroomId, classroomPost: req.query.classroomPostId, student: req.user.id });
+  if(!result){
+    return next(new AppError("No Result found with the given query parameters", 400));
+  }
+
+  res.status(200).json({
+    status: "success",
+    result
   });
 });
