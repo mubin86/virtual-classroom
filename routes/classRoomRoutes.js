@@ -6,7 +6,7 @@ const authController = require('./../controllers/authController');
 const router = express.Router();
 
 // Protect all routes after this middleware
-router.use(authController.protect('teacher')); //** admin condition also get verified by this condition
+router.use(authController.protect('teacher')); //** admin authentication condition also get verified by this condition
 router.use(authController.restrictTo('admin', 'teacher'));
 
 router

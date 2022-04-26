@@ -26,11 +26,16 @@ const classroomPostSchema = new mongoose.Schema({
         message: 'Post is either: assignment, exam'
     }
   },
+  isEmailSent: {
+    type: Boolean,
+    default: false,
+  },
   createdAt: {
     type: Date,
     default: Date.now(),
     select: false
   },
+
   active: {
     type: Boolean,
     default: true,

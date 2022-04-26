@@ -6,7 +6,6 @@ const studentSchema = new mongoose.Schema({
   name: {
     type: String,
     required: [true, 'Please provide your name'],
-    unique: true,
     minlength: 5
   },
   email: {

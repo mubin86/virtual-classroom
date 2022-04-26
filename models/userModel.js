@@ -2,6 +2,9 @@ const mongoose = require("mongoose");
 const validator = require("validator");
 const bcrypt = require("bcryptjs");
 
+//*********this is actually the teacher model ***////
+//**We just keep the name userModel to indiacte that an Admin role also can be inserted into this table
+
 const userSchema = new mongoose.Schema({
   email: {
     type: String,

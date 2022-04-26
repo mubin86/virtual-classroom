@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
+const cron = require('node-cron');
+const cronTask = require('./utils/cronTask');
 
 process.on('uncaughtException', err => {
   console.log(`uncaughtException error name:  ${err.name} and error message: ${err.message}`);
@@ -20,6 +22,14 @@ mongoose
 const port = process.env.PORT || 3000;
 const server = app.listen(port, () => {
   console.log(`App running on port ${port}...`);
+});
+
+/**run cron job in every 5 minutes bcz we need to send email every student before 1 hour of exam/assignment deadline */
+//**so we must be contionusly checking about the deadline time*/
+cron.schedule('*/5 * * * *', async () => {
+  console.log("scheduler running");
+  const cronTaskResponse = await cronTask();
+  console.log("cronTaskResponse is ", cronTaskResponse)
 });
 
 process.on('unhandledRejection', err => {

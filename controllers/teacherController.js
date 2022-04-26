@@ -1,8 +1,10 @@
 const crypto = require('crypto');
-const User = require("../models/userModel");
+const User = require("../models/userModel"); //***it is actually the Teacher Model */
+const Result = require("../models/resultModel"); 
 const sendEmail = require('./../utils/email');
 const catchAsync = require("./../utils/catchAsync");
 const AppError = require('./../utils/appError');
+const ClassroomPost = require('../models/classroomPostModel');
 
 exports.getAllTeacaher = catchAsync(async (req, res, next) => {
     const teachers = await User.find({role: "teacher"}).sort({createdAt: -1});
@@ -106,4 +108,30 @@ exports.deleteTeacaher = catchAsync(async (req, res, next) => {
       status: "success",
       data: null,
     });
+});
+
+
+exports.createResult = catchAsync(async (req, res, next) => {
+  let classroomPost = await ClassroomPost.findById(req.body.classroomPostId);
+  if(!classroomPost){
+    return next(new AppError("No ClassroomPost found with that ID", 404));
+  }
+
+  const result = new Result({
+    teacher: req.user.id,
+    classroom: req.body.classroomId,
+    classroomPost: req.body.classroomPostId,
+    student: req.body.studentId,
+    totalMarks: classroomPost.marks,
+    obtainedMarks: req.body.obtainedMarks
+  })
+
+   let newResult = await result.save();
+
+  res.status(201).json({
+    status: "success",
+    data: {
+      result: newResult,
+    },
+  });
 });

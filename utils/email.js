@@ -13,7 +13,7 @@ function getMessage(options) {
       text: options.message,
       html: `<strong>${options.message}</strong>`,
     };
-  }
+}
 
 const sendEmail = async options => {
 try {

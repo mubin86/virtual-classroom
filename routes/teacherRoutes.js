@@ -6,8 +6,12 @@ const router = express.Router();
 
 router.post('/login', authController.login);
 
+router
+  .route("/create-result")
+  .post(authController.restrictTo('teacher'), teacherController.createResult);
+
 // Protect all routes after this middleware
-router.use(authController.protect('teacher')); //** admin condition also get verified by this condition
+router.use(authController.protect('teacher')); //** admin authentication condition also get verified by this condition
 router.use(authController.restrictTo('admin'));
 
 router
